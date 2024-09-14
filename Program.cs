@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyFirstApi.DataAccess;
+using MyFirstApi.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,10 @@ connection = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING");
 
 builder.Services.AddDbContext<DbContext, FilmDb>(options =>
     options.UseSqlServer(connection));
+
+builder.Services.AddTransient<IFilmRepo, FilmRepo>();
+
+builder.Services.AddAutoMapper(typeof(FirstApiMappingProfile));
 
 var app = builder.Build();
 

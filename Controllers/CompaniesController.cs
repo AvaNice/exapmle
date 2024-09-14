@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyFirstApi.Entities;
+using MyFirstApi.Services;
 
 namespace MyFirstApi.Controllers;
 
@@ -8,43 +9,18 @@ namespace MyFirstApi.Controllers;
 [Route("companies")]
 public class CompaniesController : ControllerBase
 {
-    private readonly DbSet<CompanyEntity> _dbSet;
+    private readonly IFilmService _service;
     
-    public CompaniesController(DbContext context)
+    public CompaniesController(IFilmService service)
     {
-        _dbSet = context.Set<CompanyEntity>();
+        _service = service;
     }
     
     [HttpGet]
     public IActionResult GetCompanyById([FromQuery]int id)
     {
-        var result = _dbSet.Find(id);
+        var result = _service.GetById(id);
 
         return Ok(result);
-    }
-
-    [HttpPost]
-    public IActionResult CreateCompany([FromBody] CompanyEntity entity)
-    {
-        _dbSet.Add(entity);
-
-        return Created();
-    }
-    
-    [HttpPut]
-    public IActionResult UpdateCompany([FromBody] CompanyEntity entity)
-    {
-        _dbSet.Update(entity);
-
-        return Accepted();
-    }
-    
-    [HttpDelete]
-    public IActionResult DeleteCompanyById(int id)
-    {
-        var result = _dbSet.Find(id);
-        _dbSet.Remove(result!);
-
-        return NoContent();
     }
 }
